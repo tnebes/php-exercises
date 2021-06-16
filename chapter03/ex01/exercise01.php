@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     Author: tnebes
     16 June 2021
     Page 101
@@ -17,56 +17,96 @@
 
  -->
 
-<?php
+<!DOCTYPE html>
+<html lang="en">
 
-declare(strict_types=1);
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
 
-$length = $_POST['roomLength'];
-$width = $_POST['roomWidth'];
-$heigth = $_POST['roomHeight'];
-$paintCost = 17.00;
-$nominalPaintSize = 400;
-$labourCost = 25;
+<body>
 
-function getRoomLength() : float
-{
+    <h1>Here is our offer:</h1>
 
-}
+    <?php
+    
+    //declare(strict_types=1);
 
-function getRoomWidth() : float 
-{
-
-}
-
-function getRoomHeight() : float
-{
-
-}
-
-function getRoomArea() : float
-{
-
-}
-
-function getPaintCost() : float
-{
-
-}
-
-function getLabourCost() : float
-{
-
-}
-
-function getTotalCost() : float
-{
-    return 0.0;
-}
-
-function get
+    $length = $_POST['roomLength'];
+    $width = $_POST['roomWidth'];
+    $heigth = $_POST['roomHeight'];
+    $paintCost = 17.00;
+    $nominalPaintSize = 400;
+    $labourCost = 25;
+    $labourNominalArea = 200;
 
 
+    function calculateWallArea(float $sideA, float $sideB) : float
+    {
+        return $sideA * $sideB;
+    }
 
+    function getWallAreaA() : float
+    {
+        global $length, $heigth;
+        return calculateWallArea($length, $heigth);
+    }
 
+    function getWallAreaB() : float
+    {
+        global $width, $heigth;
+        return calculateWallArea($width, $heigth);
+    }
 
-?>
+    function getTotalPaintingArea() : float
+    {
+        return getWallAreaA() * 2 + getWallAreaB() * 2;
+    }
+
+    function getRoomArea() : float
+    {
+        global $width, $length;
+        return $width * $length;
+    }
+
+    function getPaintCost() : float
+    {
+        global $nominalPaintSize, $paintCost;
+        $paintUnitsNeeded = ceil(getTotalPaintingArea() / $nominalPaintSize);
+        if ($paintUnitsNeeded <= 1) {
+            return $paintCost;
+        }
+        return $paintUnitsNeeded * $paintCost;
+    }
+
+    function getLabourCost() : float
+    {
+        global $labourNominalArea, $labourCost;
+        $labourQuantity = ceil(getTotalPaintingArea() / $labourNominalArea);
+        if ($labourQuantity <= 1) {
+            return $labourCost;
+        }
+        return $labourQuantity * $labourCost;
+    }
+
+    function getTotalCost() : float
+    {
+        return getPaintCost() + getLabourCost();
+    }
+
+    print("<p>");
+    print("For your wonderful room with the lenght of $length, width of $width and height of $heigth<br/>");
+    printf("Whose total area is %.2f <br/>", getRoomArea());
+    printf("The paint cost is $%.2f <br/>", getPaintCost());
+    printf("The labour cost is $%.2f <br/>", getLabourCost());
+    printf("Thus the total cost would be $%.2f ", getTotalCost());
+    print("</p>");
+
+    ?>
+
+</body>
+
+</html>
